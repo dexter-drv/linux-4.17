@@ -1,0 +1,63 @@
+Binary files linux-4.17/.DS_Store and linux-4.17-modified/.DS_Store differ
+diff -ruN linux-4.17/Makefile linux-4.17-modified/Makefile
+--- linux-4.17/Makefile	2018-06-03 17:15:21
++++ linux-4.17-modified/Makefile	2023-11-10 17:29:04
+@@ -978,7 +978,7 @@
+ 
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+-core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
++core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ hello/
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+diff -ruN linux-4.17/arch/x86/entry/syscalls/syscall_64.tbl linux-4.17-modified/arch/x86/entry/syscalls/syscall_64.tbl
+--- linux-4.17/arch/x86/entry/syscalls/syscall_64.tbl	2018-06-03 17:15:21
++++ linux-4.17-modified/arch/x86/entry/syscalls/syscall_64.tbl	2023-11-10 17:30:14
+@@ -384,3 +384,4 @@
+ 545	x32	execveat		__x32_compat_sys_execveat/ptregs
+ 546	x32	preadv2			__x32_compat_sys_preadv64v2
+ 547	x32	pwritev2		__x32_compat_sys_pwritev64v2
++548	common	hello			__x64_sys_hello
+diff -ruN linux-4.17/hello/Makefile linux-4.17-modified/hello/Makefile
+--- linux-4.17/hello/Makefile	1969-12-31 19:00:00
++++ linux-4.17-modified/hello/Makefile	2023-11-10 15:03:22
+@@ -0,0 +1 @@
++obj-y := hello.o
+diff -ruN linux-4.17/hello/hello.c linux-4.17-modified/hello/hello.c
+--- linux-4.17/hello/hello.c	1969-12-31 19:00:00
++++ linux-4.17-modified/hello/hello.c	2023-11-10 17:28:16
+@@ -0,0 +1,7 @@
++#include <linux/kernel.h>
++#include <linux/syscalls.h>
++
++SYSCALL_DEFINE1(hello, int, a)
++{
++    return a;
++}
+diff -ruN linux-4.17/include/linux/syscalls.h linux-4.17-modified/include/linux/syscalls.h
+--- linux-4.17/include/linux/syscalls.h	2018-06-03 17:15:21
++++ linux-4.17-modified/include/linux/syscalls.h	2023-11-10 17:27:21
+@@ -1267,5 +1267,5 @@
+ {
+ 	return do_sys_truncate(pathname, length);
+ }
+-
++asmlinkage long sys_hello(int);
+ #endif
+diff -ruN linux-4.17/include/uapi/asm-generic/unistd.h linux-4.17-modified/include/uapi/asm-generic/unistd.h
+--- linux-4.17/include/uapi/asm-generic/unistd.h	2018-06-03 17:15:21
++++ linux-4.17-modified/include/uapi/asm-generic/unistd.h	2023-11-10 14:58:43
+@@ -732,9 +732,10 @@
+ __SYSCALL(__NR_pkey_free,     sys_pkey_free)
+ #define __NR_statx 291
+ __SYSCALL(__NR_statx,     sys_statx)
+-
++#define __NR_process_hello 292
++__SYSCALL(__NR_process_hello, sys_hello)
+ #undef __NR_syscalls
+-#define __NR_syscalls 292
++#define __NR_syscalls 293
+ 
+ /*
+  * 32 bit systems traditionally used different
