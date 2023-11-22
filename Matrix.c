@@ -1,100 +1,95 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
+// C Program to multiply two matrix using pthreads without 
+// use of global variables 
+#include<stdio.h>
+#include<pthread.h>
+#include<unistd.h>
+#include<stdlib.h>
+#define MAX 100
 
-#define MAX_SIZE 10
 
-// Define matrix size (adjust as needed)
-#define ROWS_A 3
-#define COLS_A 3
-#define ROWS_B 3
-#define COLS_B 3
-
-// Matrices
-int matrixA[ROWS_A][COLS_A];
-int matrixB[ROWS_B][COLS_B];
-int resultMatrix[ROWS_A][COLS_B];
-
-// Structure to pass data to each thread
-struct ThreadData {
-    int row;
-    int col;
-};
-
-// Function to multiply a specific row of matrix A by a specific column of matrix B
-void *multiply(void *arg) {
-    struct ThreadData *data = (struct ThreadData *)arg;
-    int row = data->row;
-    int col = data->col;
-
-    int sum = 0;
-    for (int i = 0; i < COLS_A; ++i) {
-        sum += matrixA[row][i] * matrixB[i][col];
-    }
-
-    resultMatrix[row][col] = sum;
-
-    pthread_exit(NULL);
+//Each thread computes single element in the resultant matrix
+void *mult(void* arg)
+{
+	int *data = (int *)arg;
+	int k = 0, i = 0;
+	
+	int x = data[0];
+	for (i = 1; i <= x; i++)
+		k += data[i]*data[i+x];
+	
+	int *p = (int*)malloc(sizeof(int));
+		*p = k;
+	
+//Used to terminate a thread and the return value is passed as a pointer
+	pthread_exit(p);
 }
 
-int main() {
-    // Initialize matrices with some values (adjust as needed)
-    for (int i = 0; i < ROWS_A; ++i) {
-        for (int j = 0; j < COLS_A; ++j) {
-            matrixA[i][j] = i + j;
-        }
-    }
+//Driver code
+int main()
+{
 
-    for (int i = 0; i < ROWS_B; ++i) {
-        for (int j = 0; j < COLS_B; ++j) {
-            matrixB[i][j] = i - j;
-        }
-    }
+	int matA[MAX][MAX]; 
+	int matB[MAX][MAX]; 
+	
+	
+	int r1=MAX,c1=MAX,r2=MAX,c2=MAX,i,j,k;
 
-    // Display matrices A and B
-    printf("Matrix A:\n");
-    for (int i = 0; i < ROWS_A; ++i) {
-        for (int j = 0; j < COLS_A; ++j) {
-            printf("%d\t", matrixA[i][j]);
-        }
-        printf("\n");
-    }
 
-    printf("\nMatrix B:\n");
-    for (int i = 0; i < ROWS_B; ++i) {
-        for (int j = 0; j < COLS_B; ++j) {
-            printf("%d\t", matrixB[i][j]);
-        }
-        printf("\n");
-    }
+	// Generating random values in matA
+	for (i = 0; i < r1; i++) 
+			for (j = 0; j < c1; j++) 
+				matA[i][j] = rand() % 10; 
+		
+		// Generating random values in matB 
+	for (i = 0; i < r1; i++) 
+			for (j = 0; j < c1; j++) 
+				matB[i][j] = rand() % 10; 
+	
+	
+	
+	
+	int max = r1*c2;
+	
+	
+	//declaring array of threads of size r1*c2	 
+	pthread_t *threads;
+	threads = (pthread_t*)malloc(max*sizeof(pthread_t));
+	
+	int count = 0;
+	int* data = NULL;
+	for (i = 0; i < r1; i++)
+		for (j = 0; j < c2; j++)
+			{
+				
+			//storing row and column elements in data 
+			data = (int *)malloc((20)*sizeof(int));
+			data[0] = c1;
+	
+			for (k = 0; k < c1; k++)
+				data[k+1] = matA[i][k];
+	
+			for (k = 0; k < r2; k++)
+				data[k+c1+1] = matB[k][j];
+			
+			//creating threads
+				pthread_create(&threads[count++], NULL, 
+							mult, (void*)(data));
+				
+					}
+	
+	printf("RESULTANT MATRIX IS :- \n");
+	for (i = 0; i < max; i++) 
+	{
+	void *k;
+	
+	//Joining all threads and collecting return value 
+	pthread_join(threads[i], &k);
+			
+		
+		int *p = (int *)k;
+	}
 
-    // Multiply matrices using threads
-    pthread_t threads[MAX_SIZE][MAX_SIZE];
+	
 
-    for (int i = 0; i < ROWS_A; ++i) {
-        for (int j = 0; j < COLS_B; ++j) {
-            struct ThreadData *data = (struct ThreadData *)malloc(sizeof(struct ThreadData));
-            data->row = i;
-            data->col = j;
-            pthread_create(&threads[i][j], NULL, multiply, (void *)data);
-        }
-    }
-
-    // Wait for all threads to finish
-    for (int i = 0; i < ROWS_A; ++i) {
-        for (int j = 0; j < COLS_B; ++j) {
-            pthread_join(threads[i][j], NULL);
-        }
-    }
-
-    // Display the result matrix
-    printf("\nResult Matrix:\n");
-    for (int i = 0; i < ROWS_A; ++i) {
-        for (int j = 0; j < COLS_B; ++j) {
-            printf("%d\t", resultMatrix[i][j]);
-        }
-        printf("\n");
-    }
-
-    return 0;
+return 0;
 }
