@@ -170,6 +170,5 @@ int main(void)
   matrix_unmap(matrix_a, m_size);
   matrix_unmap(matrix_b, m_size);
   matrix_unmap(matrix_c, m_size);
-  printf("Time for %d system calls: %f seconds \n", ITERATIONS, (double)(clock() - start) / CLOCKS_PER_SEC);
-}
+  printf("Time: %f seconds \n", (double)(clock() - start) / CLOCKS_PER_SEC);
 }
