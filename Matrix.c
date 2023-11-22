@@ -106,6 +106,7 @@ __attribute__ ((noreturn)) void row_multiply(void *row_args)
 
 int main(void)
 {
+  clock_t start = clock();
   /* Calculate the memory size of the matrices */
   unsigned long m_size = sizeof(int) * (unsigned long) (MATRIX_SIZE * MATRIX_SIZE);
 
@@ -169,4 +170,6 @@ int main(void)
   matrix_unmap(matrix_a, m_size);
   matrix_unmap(matrix_b, m_size);
   matrix_unmap(matrix_c, m_size);
+  printf("Time for %d system calls: %f seconds \n", ITERATIONS, (double)(clock() - start) / CLOCKS_PER_SEC);
+}
 }
