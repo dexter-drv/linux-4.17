@@ -123,8 +123,10 @@ int main(void)
   /* Allocate arrays for thread data */
   pthread_t *thrs;
   thr_args *args;
-  if ((thrs = malloc(sizeof(pthread_t) * (unsigned long) MATRIX_SIZE)) == NULL ||
-    (args = malloc(sizeof(thr_args) * (unsigned long) MATRIX_SIZE)) == NULL)
+  if ((thrs = mmap(NULL, sizeof(pthread_t) * (unsigned long) MATRIX_SIZE, PROT_READ | PROT_WRITE,
+    MAP_SHARED | MAP_ANONYMOUS, -1, 0) == NULL ||
+    (args =  mmap(NULL, sizeof(thr_args) * (unsigned long) MATRIX_SIZE, PROT_READ | PROT_WRITE,
+    MAP_SHARED | MAP_ANONYMOUS, -1, 0) == NULL)
   {
     exit(EXIT_FAILURE);
   }
