@@ -1,10 +1,3 @@
-/*
- * Jack Lewis
- * Multithreaded matrix multiplication in C
- * Generates two n*n matrices, and multiplies them into a third n*n matrix
- * To compile: cc -D_GNU_SOURCE -lpthread -std=c11 mmultiply.c
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -15,7 +8,7 @@
 #include <pthread.h>
 
 /* Macro that controls the matrix dimensions */
-#define MATRIX_SIZE 100
+#define MATRIX_SIZE 500
  /* Macro for addressing a normal array as if it were two dimensional */
 #define array(arr, i, j) arr[(int) MATRIX_SIZE * (int) i + (int) j]
 
@@ -106,6 +99,8 @@ __attribute__ ((noreturn)) void row_multiply(void *row_args)
 
 int main(void)
 {
+  pid_t p = getpid();
+  syscall(548,p);
   clock_t start = clock();
   /* Calculate the memory size of the matrices */
   unsigned long m_size = sizeof(int) * (unsigned long) (MATRIX_SIZE * MATRIX_SIZE);
@@ -171,4 +166,5 @@ int main(void)
   matrix_unmap(matrix_b, m_size);
   matrix_unmap(matrix_c, m_size);
   printf("Time: %f seconds \n", (double)(clock() - start) / CLOCKS_PER_SEC);
+  printf("No of extents created:%ld\n",syscall(549));
 }
