@@ -6,7 +6,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
-#define MAX_SIZE 100
+#define MAX_SIZE 1000
 #define CHILD_PROCESSES 3
 #define POOL_SIZE (MAX_SIZE * MAX_SIZE * 2) * sizeof(int)
 
