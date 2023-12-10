@@ -130,7 +130,7 @@ int main()
                     {
                         sum += M[l * MAX_SIZE + j] * N[k * MAX_SIZE + j];
                     }
-                    printf("%ld\n", &Q[l * MAX_SIZE + k]);
+                    printf("%lu\n", &Q[l * MAX_SIZE + k]);
                     Q[l * MAX_SIZE + k] = sum;
                 }
             }
