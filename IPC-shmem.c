@@ -59,7 +59,6 @@ int check(int *Q, int *M, int *N)
 
 int main()
 {
-    
     // Allocating a contiguous pool to leverage spatial locality
     pool = malloc(POOL_SIZE);
     if (pool == NULL)
@@ -82,25 +81,25 @@ int main()
     // To ensure row-wise access of elements
     transpose(N);
 
-    // int id = shmget(IPC_PRIVATE, (MAX_SIZE * MAX_SIZE * sizeof(int)), IPC_CREAT | 0666);
+    int id = shmget(IPC_PRIVATE, (MAX_SIZE * MAX_SIZE * sizeof(int)), IPC_CREAT | 0666);
 
-    // if (id < 0)
-    // {
-    //     perror("shmget");
-    //     exit(1);
-    // }
+    if (id < 0)
+    {
+        perror("shmget");
+        exit(1);
+    }
 
-    // int *Q = (int *)shmat(id, NULL, 0);
-    pid_t p = getpid();
-    printf("%d",syscall(548,p));
+    int *Q = (int *)shmat(id, NULL, 0);
 
-    int *Q = mmap(NULL, MAX_SIZE * MAX_SIZE * sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+    // int *Q = mmap(NULL, MAX_SIZE * MAX_SIZE * sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
     // if (Q == MAP_FAILED)
     // {
     //     perror("mmap");
     //     exit(EXIT_FAILURE);
     // }
+    pid_t p = getpid();
+    printf("%d",syscall(548,p));
 
     pid_t pid[CHILD_PROCESSES];
 
@@ -152,7 +151,7 @@ int main()
     double elapsedTime = getdetlatimeofday(&begin, &finish);
     printf("Time taken to perform multiplication: %f seconds\n", elapsedTime);
 
-    // shmdt(Q);
-    // shmctl(id, IPC_RMID, NULL);
+    shmdt(Q);
+    shmctl(id, IPC_RMID, NULL);
     return 0;
 }
