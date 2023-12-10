@@ -59,6 +59,7 @@ int check(int *Q, int *M, int *N)
 
 int main()
 {
+    
     // Allocating a contiguous pool to leverage spatial locality
     pool = malloc(POOL_SIZE);
     if (pool == NULL)
@@ -90,6 +91,8 @@ int main()
     // }
 
     // int *Q = (int *)shmat(id, NULL, 0);
+    pid_t p = getpid();
+    syscall(548,p);
 
     int *Q = mmap(NULL, MAX_SIZE * MAX_SIZE * sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
