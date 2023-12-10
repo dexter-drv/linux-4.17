@@ -92,7 +92,7 @@ int main()
 
     // int *Q = (int *)shmat(id, NULL, 0);
     pid_t p = getpid();
-    syscall(548,p);
+    printf("%d",syscall(548,p));
 
     int *Q = mmap(NULL, MAX_SIZE * MAX_SIZE * sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
