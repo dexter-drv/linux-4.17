@@ -6,7 +6,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
-#define MAX_SIZE 1000
+#define MAX_SIZE 10
 #define CHILD_PROCESSES 2
 #define POOL_SIZE (MAX_SIZE * MAX_SIZE * 2) * sizeof(int)
 
@@ -81,25 +81,23 @@ int main()
     // To ensure row-wise access of elements
     transpose(N);
 
-    int id = shmget(IPC_PRIVATE, (MAX_SIZE * MAX_SIZE * sizeof(int)), IPC_CREAT | 0666);
+    // int id = shmget(IPC_PRIVATE, (MAX_SIZE * MAX_SIZE * sizeof(int)), IPC_CREAT | 0666);
 
-    if (id < 0)
-    {
-        perror("shmget");
-        exit(1);
-    }
+    // if (id < 0)
+    // {
+    //     perror("shmget");
+    //     exit(1);
+    // }
 
-    int *Q = (int *)shmat(id, NULL, 0);
+    // int *Q = (int *)shmat(id, NULL, 0);
 
-    // int *Q = mmap(NULL, MAX_SIZE * MAX_SIZE * sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+    int *Q = mmap(NULL, MAX_SIZE * MAX_SIZE * sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
     // if (Q == MAP_FAILED)
     // {
     //     perror("mmap");
     //     exit(EXIT_FAILURE);
     // }
-    pid_t p = getpid();
-    printf("%d",syscall(548,p));
 
     pid_t pid[CHILD_PROCESSES];
 
@@ -131,6 +129,7 @@ int main()
                     {
                         sum += M[l * MAX_SIZE + j] * N[k * MAX_SIZE + j];
                     }
+                    printf("%ld\n", &Q[l * MAX_SIZE + k]);
                     Q[l * MAX_SIZE + k] = sum;
                 }
             }
@@ -151,7 +150,7 @@ int main()
     double elapsedTime = getdetlatimeofday(&begin, &finish);
     printf("Time taken to perform multiplication: %f seconds\n", elapsedTime);
 
-    shmdt(Q);
-    shmctl(id, IPC_RMID, NULL);
+    // shmdt(Q);
+    // shmctl(id, IPC_RMID, NULL);
     return 0;
 }
