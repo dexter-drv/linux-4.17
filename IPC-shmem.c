@@ -6,8 +6,8 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
-#define MAX_SIZE 10
-#define CHILD_PROCESSES 3
+#define MAX_SIZE 10000*10000
+#define CHILD_PROCESSES 14
 #define POOL_SIZE (MAX_SIZE * MAX_SIZE * 2) * sizeof(int)
 
 void *pool;
@@ -92,8 +92,8 @@ int main()
     // int *Q = (int *)shmat(id, NULL, 0);
 
     int *Q = mmap(NULL, MAX_SIZE * MAX_SIZE * sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-    pid_t p = getpid();
-    printf("%d\n",syscall(548,p));
+    // pid_t p = getpid();
+    // printf("%d\n",syscall(548,p));
     // if (Q == MAP_FAILED)
     // {
     //     perror("mmap");
