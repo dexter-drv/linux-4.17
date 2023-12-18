@@ -10,10 +10,10 @@ void *printThreadID(void *threadID) {
 }
 
 int main() {
-    pid_t p = getpid();
-    printf("%d\n",syscall(548,p,2));
+    // pid_t p = getpid();
+    // printf("%d\n",syscall(548,p,2));
     // Number of threads to create
-    const int numThreads = 5;
+    const int numThreads = 15;
 
     // Thread ID array
     pthread_t threads[numThreads];
