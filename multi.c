@@ -5,13 +5,12 @@
 void *printThreadID(void *threadID) {
     long tid = (long)threadID;
     printf("Thread ID: %ld\n", tid);
+    syscall(549);
     while(1);
     pthread_exit(NULL);
 }
 
 int main() {
-    // pid_t p = getpid();
-    // printf("%d\n",syscall(548,p,2));
     // Number of threads to create
     const int numThreads = 15;
 
