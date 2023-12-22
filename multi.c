@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <unistd.h>
 
 // Function to be executed by each thread
 void *printThreadID(void *threadID) {
@@ -11,8 +12,8 @@ void *printThreadID(void *threadID) {
 }
 
 int main() {
-    // Number of threads to create
-    const int numThreads = 15;
+    // Number of threads to create which equals the number of processors available
+    const int numThreads = sysconf(_SC_NPROCESSORS_ONLN);;
 
     // Thread ID array
     pthread_t threads[numThreads];
